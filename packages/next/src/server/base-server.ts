@@ -303,6 +303,9 @@ export type NextEnabledDirectories = {
   readonly app: boolean
 }
 
+// used in
+// - packages/next/src/server/next-server
+// - packages/next/src/server/web-server
 export default abstract class Server<ServerOptions extends Options = Options> {
   public readonly hostname?: string
   public readonly fetchHostname?: string

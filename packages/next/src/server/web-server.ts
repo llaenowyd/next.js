@@ -47,6 +47,7 @@ interface WebServerOptions extends Options {
   }
 }
 
+// this is used only in packages/next/src/build/webpack/loaders/next-edge-ssr-loader/render.ts
 export default class NextWebServer extends BaseServer<WebServerOptions> {
   constructor(options: WebServerOptions) {
     super(options)
