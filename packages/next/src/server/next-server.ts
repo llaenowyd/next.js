@@ -415,6 +415,7 @@ export default class NextNodeServer extends BaseServer {
       revalidate: Revalidate | undefined
     }
   ): Promise<void> {
+    // call import `sendRenderResult`
     return sendRenderResult({
       req: req.originalRequest,
       res: res.originalResponse,

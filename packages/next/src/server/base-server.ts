@@ -1585,6 +1585,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
         revalidate = undefined
       }
 
+      // the only place inside here that does `sendRenderResult`
       await this.sendRenderResult(req, res, {
         result: body,
         type,
@@ -1662,6 +1663,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
       (req.url?.match(/^\/_next\//) ||
         (this.hasStaticDir && req.url!.match(/^\/static\//)))
     ) {
+      // mark - here is instead of `pipe`
       return this.handleRequest(req, res, parsedUrl)
     }
 
@@ -2534,6 +2536,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
           if (!isDataReq) {
             // Production already emitted the fallback as static HTML.
             if (isProduction) {
+              // mark
               const html = await this.getFallback(
                 locale ? `/${locale}${pathname}` : pathname
               )

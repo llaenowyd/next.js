@@ -271,6 +271,7 @@ export default class NextWebServer extends BaseServer<WebServerOptions> {
       res.setHeader('X-Powered-By', 'Next.js')
     }
 
+    // Content-Type is always added - see remark above suggesting known duplication with other annotation
     if (!res.getHeader('Content-Type')) {
       res.setHeader(
         'Content-Type',
