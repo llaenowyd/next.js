@@ -56,6 +56,8 @@ export interface RequestHandler {
 
 const SYMBOL_LOAD_CONFIG = Symbol('next.load_config')
 
+// This server does not derive normally from `BaseServer`
+// `getServerImpl` above helps it facade `NextNodeServer` that derives from `BaseServer`
 export class NextServer {
   private serverPromise?: Promise<Server>
   private server?: Server

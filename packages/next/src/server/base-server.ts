@@ -1485,6 +1485,15 @@ export default abstract class Server<ServerOptions extends Options = Options> {
     }
   }
 
+  // used in
+  //   - this.getRequestHandlerWithMetadata
+  //   - packages/next/src/server/next-server ⭐
+  //   - packages/next/src/server/next ⭐
+  //   - packages/next/src/build/webpack/loaders/next-edge-ssr-loader
+  //   - examples/custom-server
+  //   - examples/...
+  //   - bench/next-minimal-server
+  //   - tests...
   public getRequestHandler(): BaseRequestHandler {
     return this.handleRequest.bind(this)
   }
