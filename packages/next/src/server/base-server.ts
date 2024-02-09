@@ -847,6 +847,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
       // Wait for the matchers to be ready.
       await this.matchers.waitTillReady()
 
+      // note that the following replaces `response.setHeader` with a wrapper introducing more behaviors
       // ensure cookies set in middleware are merged and
       // not overridden by API routes/getServerSideProps
       const _res = (res as any).originalResponse || res
@@ -856,7 +857,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
         // When renders /_error after page is failed,
         // it could attempt to set headers after headers
         if (_res.headersSent) {
-          return
+          return // sometimes don't set header
         }
         if (name.toLowerCase() === 'set-cookie') {
           const middlewareValue = getRequestMeta(req, 'middlewareCookie')
@@ -866,6 +867,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
             !Array.isArray(val) ||
             !val.every((item, idx) => item === middlewareValue[idx])
           ) {
+            // add "middleware cookie" from request to response headers, when invoked to set some other value
             val = [
               // TODO: (wyattjoh) find out why this is called multiple times resulting in duplicate cookies being added
               ...new Set([
@@ -874,7 +876,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
                   ? [val]
                   : Array.isArray(val)
                   ? val
-                  : []),
+                  : []), // additional runtime type check may result in not setting the supplied `val`
               ]),
             ]
           }
@@ -930,7 +932,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
 
       let finished: boolean = false
       if (this.minimalMode && this.enabledDirectories.app) {
-        finished = await this.handleRSCRequest(req, res, parsedUrl)
+        finished = await this.handleRSCRequest(req, res, parsedUrl) // maybe ⭐
         if (finished) return
       }
 
@@ -978,6 +980,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
 
           const { pathname: urlPathname } = new URL(req.url, 'http://localhost')
 
+          // (ISR = incremental static regeneration)
           // For ISR  the URL is normalized to the prerenderPath so if
           // it's a data request the URL path will be the data URL,
           // basePath is already stripped by this point
@@ -1189,7 +1192,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
           url.pathname = parsedUrl.pathname
 
           finished = await this.normalizeAndAttachMetadata(req, res, parsedUrl)
-          if (finished) return
+          if (finished) return // maybe ⭐
         } catch (err) {
           if (err instanceof DecodeError || err instanceof NormalizeError) {
             res.statusCode = 400
@@ -1356,7 +1359,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
         finished = await this.normalizeAndAttachMetadata(req, res, parsedUrl)
         if (finished) return
 
-        await this.handleCatchallRenderRequest(req, res, parsedUrl)
+        await this.handleCatchallRenderRequest(req, res, parsedUrl) // maybe ⭐
         return
       }
 
@@ -1371,7 +1374,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
           req,
           res,
           parsedUrl
-        )
+        ) // maybe ⭐
         if (finished) return
 
         const err = new Error()
@@ -1398,7 +1401,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
       }
 
       res.statusCode = 200
-      return await this.run(req, res, parsedUrl)
+      return await this.run(req, res, parsedUrl) // maybe ⭐
     } catch (err: any) {
       if (err instanceof NoFallbackError) {
         throw err
