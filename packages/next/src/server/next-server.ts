@@ -159,6 +159,10 @@ function getMiddlewareMatcher(
   return matcher
 }
 
+// used in
+// - packages/next/src/server/dev/next-dev-server
+// - packages/next/src/server/lib/server-ipc
+// - packages/next/src/server/next
 export default class NextNodeServer extends BaseServer {
   protected middlewareManifestPath: string
   private _serverDistDir: string | undefined
@@ -415,6 +419,7 @@ export default class NextNodeServer extends BaseServer {
       revalidate: Revalidate | undefined
     }
   ): Promise<void> {
+    // call import `sendRenderResult`
     return sendRenderResult({
       req: req.originalRequest,
       res: res.originalResponse,

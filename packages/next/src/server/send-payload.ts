@@ -32,6 +32,9 @@ export function sendEtagResponse(
   return false
 }
 
+// sendRenderResult
+//   - looks like the headers must be the same on a HEAD
+//   - Content-Type always added
 export async function sendRenderResult({
   req,
   res,
@@ -70,6 +73,7 @@ export async function sendRenderResult({
     }
   }
 
+  // Content-Type is always added
   if (!res.getHeader('Content-Type')) {
     res.setHeader(
       'Content-Type',
